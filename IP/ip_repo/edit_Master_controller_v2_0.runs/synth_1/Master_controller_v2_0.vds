@@ -1,0 +1,499 @@
+#-----------------------------------------------------------
+# Vivado v2016.3 (64-bit)
+# SW Build 1682563 on Mon Oct 10 19:07:27 MDT 2016
+# IP Build 1681267 on Mon Oct 10 21:28:31 MDT 2016
+# Start of session at: Fri Apr 05 12:09:16 2019
+# Process ID: 4704
+# Current directory: w:/Desktop/Phase_3/StopWatch_1/ip_repo/edit_Master_controller_v2_0.runs/synth_1
+# Command line: vivado.exe -log Master_controller_v2_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source Master_controller_v2_0.tcl
+# Log file: w:/Desktop/Phase_3/StopWatch_1/ip_repo/edit_Master_controller_v2_0.runs/synth_1/Master_controller_v2_0.vds
+# Journal file: w:/Desktop/Phase_3/StopWatch_1/ip_repo/edit_Master_controller_v2_0.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source Master_controller_v2_0.tcl -notrace
+Command: synth_design -top Master_controller_v2_0 -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 9268 
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:08 ; elapsed = 00:00:18 . Memory (MB): peak = 346.063 ; gain = 135.363
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'Master_controller_v2_0' [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0.v:4]
+	Parameter C_S00_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S00_AXI_ADDR_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'Master_controller_v2_0_S00_AXI' [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:4]
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 6 - type: integer 
+	Parameter ADDR_LSB bound to: 2 - type: integer 
+	Parameter OPT_MEM_ADDR_BITS bound to: 3 - type: integer 
+INFO: [Synth 8-226] default block is never used [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:264]
+INFO: [Synth 8-226] default block is never used [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:501]
+INFO: [Synth 8-638] synthesizing module 'Master_Controller' [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:571]
+	Parameter upWait bound to: 0 - type: integer 
+	Parameter downWait bound to: 1 - type: integer 
+	Parameter up bound to: 2 - type: integer 
+	Parameter down bound to: 3 - type: integer 
+	Parameter resetState bound to: 4 - type: integer 
+	Parameter setStateWait bound to: 5 - type: integer 
+	Parameter setState bound to: 6 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'clk_divider' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/clk_divider.v:23]
+INFO: [Synth 8-256] done synthesizing module 'clk_divider' (1#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/clk_divider.v:23]
+INFO: [Synth 8-638] synthesizing module 'set_value' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:24]
+	Parameter set_f1 bound to: 0 - type: integer 
+	Parameter set_f2 bound to: 1 - type: integer 
+	Parameter set_f3 bound to: 2 - type: integer 
+	Parameter set_f4 bound to: 3 - type: integer 
+	Parameter set_s1 bound to: 4 - type: integer 
+	Parameter set_s2 bound to: 5 - type: integer 
+	Parameter set_m1 bound to: 6 - type: integer 
+	Parameter set_m2 bound to: 7 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'debounce' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/debounce.v:25]
+	Parameter width bound to: 3 - type: integer 
+	Parameter bounce_limit bound to: 50000 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'debounce' (2#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/debounce.v:25]
+INFO: [Synth 8-226] default block is never used [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:95]
+INFO: [Synth 8-226] default block is never used [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:150]
+INFO: [Synth 8-226] default block is never used [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:171]
+INFO: [Synth 8-256] done synthesizing module 'set_value' (3#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:24]
+INFO: [Synth 8-638] synthesizing module 'up_down_counter' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/up_down_counter.v:23]
+INFO: [Synth 8-256] done synthesizing module 'up_down_counter' (4#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/up_down_counter.v:23]
+INFO: [Synth 8-638] synthesizing module 'BCD_Decoder' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:22]
+INFO: [Synth 8-638] synthesizing module 'Comparator' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:80]
+INFO: [Synth 8-256] done synthesizing module 'Comparator' (5#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:80]
+INFO: [Synth 8-638] synthesizing module 'Circuit_A' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:91]
+INFO: [Synth 8-256] done synthesizing module 'Circuit_A' (6#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:91]
+INFO: [Synth 8-638] synthesizing module 'twoToOneMUX' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:103]
+INFO: [Synth 8-256] done synthesizing module 'twoToOneMUX' (7#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:103]
+INFO: [Synth 8-638] synthesizing module 'segment_anode_set' [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:116]
+INFO: [Synth 8-226] default block is never used [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:123]
+INFO: [Synth 8-256] done synthesizing module 'segment_anode_set' (8#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:116]
+INFO: [Synth 8-256] done synthesizing module 'BCD_Decoder' (9#1) [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/BCD_Decoder.v:22]
+WARNING: [Synth 8-689] width (3) of port connection 'v' does not match port width (4) of module 'BCD_Decoder' [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:952]
+INFO: [Synth 8-155] case statement is not full and has no default [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:982]
+INFO: [Synth 8-256] done synthesizing module 'Master_Controller' (10#1) [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:571]
+INFO: [Synth 8-256] done synthesizing module 'Master_controller_v2_0_S00_AXI' (11#1) [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0_S00_AXI.v:4]
+INFO: [Synth 8-256] done synthesizing module 'Master_controller_v2_0' (12#1) [w:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/hdl/Master_controller_v2_0.v:4]
+WARNING: [Synth 8-3331] design Master_Controller has unconnected port stopwatch_val[31]
+WARNING: [Synth 8-3331] design Master_Controller has unconnected port stopwatch_val[32]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_AWPROT[2]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_AWPROT[1]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_AWPROT[0]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_ARPROT[2]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_ARPROT[1]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_ARPROT[0]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:09 ; elapsed = 00:00:21 . Memory (MB): peak = 387.914 ; gain = 177.215
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:09 ; elapsed = 00:00:24 . Memory (MB): peak = 387.914 ; gain = 177.215
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:09 ; elapsed = 00:00:24 . Memory (MB): peak = 387.914 ; gain = 177.215
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Synth 8-5545] ROM "ten_khz_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "refresh_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "four_khz_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "one_hz_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "one_hz_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "ten_khz_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "refresh_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "four_khz_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5546] ROM "switch_out" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "switch_rise" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "switch_out" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "switch_rise" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "switch_out" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "switch_rise" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/top.v:149]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [W:/Desktop/Phase_3/StopWatch_1/ip_repo/Master_controller_2.0/src/up_down_counter.v:77]
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Master_Controller'
+INFO: [Synth 8-5545] ROM "seg" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "an" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "sound_on" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5546] ROM "ready" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "v_flash" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "load_set" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5546] ROM "enable" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "counter_load" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5546] ROM "updn" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "nextstate" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "nextstate" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "nextstate" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "nextstate" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              resetState |                              000 |                            00100
+                downWait |                              001 |                            00001
+                    down |                              010 |                            00011
+                  upWait |                              011 |                            00000
+            setStateWait |                              100 |                            00101
+                setState |                              101 |                            00110
+                      up |                              110 |                            00010
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'Master_Controller'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:13 ; elapsed = 00:00:26 . Memory (MB): peak = 494.879 ; gain = 284.180
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 6     
+	   2 Input     16 Bit       Adders := 3     
+	   2 Input      4 Bit       Adders := 20    
+	   2 Input      3 Bit       Adders := 3     
++---Registers : 
+	               32 Bit    Registers := 21    
+	               16 Bit    Registers := 3     
+	                8 Bit    Registers := 1     
+	                7 Bit    Registers := 1     
+	                6 Bit    Registers := 2     
+	                4 Bit    Registers := 14    
+	                3 Bit    Registers := 3     
+	                2 Bit    Registers := 5     
+	                1 Bit    Registers := 24    
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 24    
+	  10 Input     32 Bit        Muxes := 1     
+	  16 Input     32 Bit        Muxes := 15    
+	   2 Input     16 Bit        Muxes := 3     
+	   8 Input      8 Bit        Muxes := 8     
+	   2 Input      7 Bit        Muxes := 16    
+	   2 Input      4 Bit        Muxes := 92    
+	   7 Input      4 Bit        Muxes := 7     
+	   2 Input      3 Bit        Muxes := 7     
+	   3 Input      3 Bit        Muxes := 3     
+	   7 Input      3 Bit        Muxes := 1     
+	  19 Input      3 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 10    
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 118   
+	   8 Input      1 Bit        Muxes := 16    
+	   6 Input      1 Bit        Muxes := 2     
+	   7 Input      1 Bit        Muxes := 6     
+	  10 Input      1 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module clk_divider 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 4     
++---Registers : 
+	               32 Bit    Registers := 4     
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 4     
+	   2 Input      1 Bit        Muxes := 4     
+Module debounce 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 3     
++---Registers : 
+	               16 Bit    Registers := 3     
+	                2 Bit    Registers := 3     
+	                1 Bit    Registers := 9     
++---Muxes : 
+	   2 Input     16 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 9     
+Module set_value 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      4 Bit       Adders := 7     
+	   2 Input      3 Bit       Adders := 1     
++---Registers : 
+	                4 Bit    Registers := 7     
+	                3 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      4 Bit        Muxes := 7     
+	   2 Input      3 Bit        Muxes := 3     
+	   3 Input      3 Bit        Muxes := 3     
+	   2 Input      2 Bit        Muxes := 9     
+	   3 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 16    
+	   8 Input      1 Bit        Muxes := 16    
+Module up_down_counter 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      4 Bit       Adders := 13    
+	   2 Input      3 Bit       Adders := 2     
++---Registers : 
+	                4 Bit    Registers := 7     
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      4 Bit        Muxes := 85    
+	   2 Input      3 Bit        Muxes := 4     
+	   2 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 49    
+	   6 Input      1 Bit        Muxes := 2     
+Module twoToOneMUX 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module segment_anode_set 
+Detailed RTL Component Info : 
++---Muxes : 
+	   8 Input      8 Bit        Muxes := 1     
+Module Master_Controller 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 2     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                8 Bit    Registers := 1     
+	                7 Bit    Registers := 1     
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 5     
+	  10 Input     32 Bit        Muxes := 1     
+	   2 Input      7 Bit        Muxes := 16    
+	   7 Input      4 Bit        Muxes := 7     
+	   7 Input      3 Bit        Muxes := 1     
+	  19 Input      3 Bit        Muxes := 1     
+	   7 Input      1 Bit        Muxes := 6     
+	   2 Input      1 Bit        Muxes := 4     
+	  10 Input      1 Bit        Muxes := 2     
+Module Master_controller_v2_0_S00_AXI 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 16    
+	                6 Bit    Registers := 2     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 5     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 15    
+	  16 Input     32 Bit        Muxes := 15    
+	   2 Input      1 Bit        Muxes := 4     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5546] ROM "deb/switch_out" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "deb/switch_out" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "deb/switch_rise" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "deb/switch_rise" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5545] ROM "clk_div/ten_khz_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/ten_khz_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/refresh_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/refresh_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/one_hz_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/one_hz_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/four_khz_count" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "clk_div/four_khz_clk" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+INFO: [Synth 8-5545] ROM "sound_on" won't be mapped to RAM because address size (32) is larger than maximum supported(25)
+WARNING: [Synth 8-3331] design Master_Controller has unconnected port stopwatch_val[31]
+WARNING: [Synth 8-3331] design Master_Controller has unconnected port stopwatch_val[32]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_AWPROT[2]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_AWPROT[1]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_AWPROT[0]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_ARPROT[2]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_ARPROT[1]
+WARNING: [Synth 8-3331] design Master_controller_v2_0_S00_AXI has unconnected port S_AXI_ARPROT[0]
+INFO: [Synth 8-3886] merging instance 'Master_controller_v2_0_S00_AXI_inst/axi_rresp_reg[0]' (FDRE) to 'Master_controller_v2_0_S00_AXI_inst/axi_rresp_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Master_controller_v2_0_S00_AXI_inst/\axi_rresp_reg[1] )
+INFO: [Synth 8-3886] merging instance 'Master_controller_v2_0_S00_AXI_inst/axi_bresp_reg[0]' (FDRE) to 'Master_controller_v2_0_S00_AXI_inst/axi_bresp_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Master_controller_v2_0_S00_AXI_inst/\axi_bresp_reg[1] )
+WARNING: [Synth 8-3332] Sequential element (setVal/deb/genblk1[2].switch_fall_reg[2]) is unused and will be removed from module Master_Controller.
+WARNING: [Synth 8-3332] Sequential element (axi_bresp_reg[1]) is unused and will be removed from module Master_controller_v2_0_S00_AXI.
+WARNING: [Synth 8-3332] Sequential element (axi_awaddr_reg[1]) is unused and will be removed from module Master_controller_v2_0_S00_AXI.
+WARNING: [Synth 8-3332] Sequential element (axi_awaddr_reg[0]) is unused and will be removed from module Master_controller_v2_0_S00_AXI.
+WARNING: [Synth 8-3332] Sequential element (axi_araddr_reg[1]) is unused and will be removed from module Master_controller_v2_0_S00_AXI.
+WARNING: [Synth 8-3332] Sequential element (axi_araddr_reg[0]) is unused and will be removed from module Master_controller_v2_0_S00_AXI.
+WARNING: [Synth 8-3332] Sequential element (axi_rresp_reg[1]) is unused and will be removed from module Master_controller_v2_0_S00_AXI.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:20 ; elapsed = 00:00:36 . Memory (MB): peak = 567.523 ; gain = 356.824
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:20 ; elapsed = 00:00:37 . Memory (MB): peak = 567.523 ; gain = 356.824
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:21 ; elapsed = 00:00:38 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:21 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:21 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:22 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:22 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:22 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:22 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     5|
+|2     |CARRY4 |    75|
+|3     |LUT1   |   154|
+|4     |LUT2   |   107|
+|5     |LUT3   |   106|
+|6     |LUT4   |   110|
+|7     |LUT5   |   171|
+|8     |LUT6   |   477|
+|9     |MUXF7  |    68|
+|10    |MUXF8  |    32|
+|11    |FDCE   |     6|
+|12    |FDRE   |   866|
+|13    |FDSE   |    28|
+|14    |IBUF   |    60|
+|15    |OBUF   |    59|
++------+-------+------+
+
+Report Instance Areas: 
++------+--------------------------------------+-------------------------------+------+
+|      |Instance                              |Module                         |Cells |
++------+--------------------------------------+-------------------------------+------+
+|1     |top                                   |                               |  2324|
+|2     |  Master_controller_v2_0_S00_AXI_inst |Master_controller_v2_0_S00_AXI |  2200|
+|3     |    masControl                        |Master_Controller              |  1383|
+|4     |      clk_div                         |clk_divider                    |   328|
+|5     |      setVal                          |set_value                      |   377|
+|6     |        deb                           |debounce                       |   193|
+|7     |      upDownCount                     |up_down_counter                |   432|
++------+--------------------------------------+-------------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:22 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 24 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:18 ; elapsed = 00:00:25 . Memory (MB): peak = 589.629 ; gain = 319.625
+Synthesis Optimization Complete : Time (s): cpu = 00:00:22 ; elapsed = 00:00:39 . Memory (MB): peak = 589.629 ; gain = 378.930
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 135 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+101 Infos, 24 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:20 ; elapsed = 00:00:34 . Memory (MB): peak = 625.980 ; gain = 361.625
+INFO: [Common 17-1381] The checkpoint 'w:/Desktop/Phase_3/StopWatch_1/ip_repo/edit_Master_controller_v2_0.runs/synth_1/Master_controller_v2_0.dcp' has been generated.
+report_utilization: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.094 . Memory (MB): peak = 625.980 ; gain = 0.000
+INFO: [Common 17-206] Exiting Vivado at Fri Apr 05 12:10:08 2019...
