@@ -1,0 +1,151 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file '.\stopwatch_gui.ui'
+#
+# Created by: PyQt5 UI code generator 5.12
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_Stopwatch(object):
+    def setupUi(self, Stopwatch):
+        Stopwatch.setObjectName("Stopwatch")
+        Stopwatch.resize(1126, 556)
+        Stopwatch.setStyleSheet("background-color: rgb(29, 100, 40);\n"
+                                "")
+        self.layoutWidget = QtWidgets.QWidget(Stopwatch)
+        self.layoutWidget.setGeometry(QtCore.QRect(40, 30, 1021, 326))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.lcdNumber_m2 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_m2.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_m2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_m2.setLineWidth(1)
+        self.lcdNumber_m2.setDigitCount(1)
+        self.lcdNumber_m2.setObjectName("lcdNumber_m2")
+        self.horizontalLayout_3.addWidget(self.lcdNumber_m2)
+        self.lcdNumber_m1 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_m1.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_m1.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_m1.setLineWidth(1)
+        self.lcdNumber_m1.setDigitCount(1)
+        self.lcdNumber_m1.setObjectName("lcdNumber_m1")
+        self.horizontalLayout_3.addWidget(self.lcdNumber_m1)
+        self.colon_label = QtWidgets.QLabel(self.layoutWidget)
+        self.colon_label.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.colon_label.setSizeIncrement(QtCore.QSize(100, 100))
+        self.colon_label.setBaseSize(QtCore.QSize(120, 100))
+        font = QtGui.QFont()
+        font.setPointSize(42)
+        self.colon_label.setFont(font)
+        self.colon_label.setStyleSheet("color: rgb(255, 0, 0);")
+        self.colon_label.setObjectName("colon_label")
+        self.horizontalLayout_3.addWidget(self.colon_label)
+        self.horizontalLayout_4.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.lcdNumber_s2 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_s2.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_s2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_s2.setLineWidth(1)
+        self.lcdNumber_s2.setDigitCount(1)
+        self.lcdNumber_s2.setObjectName("lcdNumber_s2")
+        self.horizontalLayout_2.addWidget(self.lcdNumber_s2)
+        self.lcdNumber_s1 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_s1.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_s1.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_s1.setLineWidth(1)
+        self.lcdNumber_s1.setDigitCount(1)
+        self.lcdNumber_s1.setObjectName("lcdNumber_s1")
+        self.horizontalLayout_2.addWidget(self.lcdNumber_s1)
+        self.decimal_label = QtWidgets.QLabel(self.layoutWidget)
+        self.decimal_label.setMaximumSize(QtCore.QSize(30, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(42)
+        self.decimal_label.setFont(font)
+        self.decimal_label.setStyleSheet("color: rgb(255, 0, 0);")
+        self.decimal_label.setObjectName("decimal_label")
+        self.horizontalLayout_2.addWidget(self.decimal_label)
+        self.horizontalLayout_4.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.lcdNumber_f4 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_f4.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_f4.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_f4.setLineWidth(1)
+        self.lcdNumber_f4.setDigitCount(1)
+        self.lcdNumber_f4.setObjectName("lcdNumber_f4")
+        self.horizontalLayout.addWidget(self.lcdNumber_f4)
+        self.lcdNumber_f3 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_f3.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_f3.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_f3.setLineWidth(1)
+        self.lcdNumber_f3.setDigitCount(1)
+        self.lcdNumber_f3.setObjectName("lcdNumber_f3")
+        self.horizontalLayout.addWidget(self.lcdNumber_f3)
+        self.lcdNumber_f2 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_f2.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_f2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_f2.setLineWidth(1)
+        self.lcdNumber_f2.setDigitCount(1)
+        self.lcdNumber_f2.setObjectName("lcdNumber_f2")
+        self.horizontalLayout.addWidget(self.lcdNumber_f2)
+        self.lcdNumber_f1 = QtWidgets.QLCDNumber(self.layoutWidget)
+        self.lcdNumber_f1.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "")
+        self.lcdNumber_f1.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lcdNumber_f1.setLineWidth(1)
+        self.lcdNumber_f1.setDigitCount(1)
+        self.lcdNumber_f1.setObjectName("lcdNumber_f1")
+        self.horizontalLayout.addWidget(self.lcdNumber_f1)
+        self.horizontalLayout_4.addLayout(self.horizontalLayout)
+        self.widget = QtWidgets.QWidget(Stopwatch)
+        self.widget.setGeometry(QtCore.QRect(48, 370, 1011, 122))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.start_pushButton = QtWidgets.QPushButton(self.widget)
+        self.start_pushButton.setMinimumSize(QtCore.QSize(0, 120))
+        self.start_pushButton.setStyleSheet("background-color: rgb(0, 255, 0);\n"
+                                            "font: 75 30pt \"Arial\";")
+        self.start_pushButton.setObjectName("start_pushButton")
+        self.horizontalLayout_5.addWidget(self.start_pushButton)
+        self.stop_pushButton = QtWidgets.QPushButton(self.widget)
+        self.stop_pushButton.setMinimumSize(QtCore.QSize(0, 120))
+        self.stop_pushButton.setStyleSheet("background-color: rgb(255, 0, 0);\n"
+                                           "font: 75 30pt \"Arial\";")
+        self.stop_pushButton.setObjectName("stop_pushButton")
+        self.horizontalLayout_5.addWidget(self.stop_pushButton)
+        self.reset_pushButton = QtWidgets.QPushButton(self.widget)
+        self.reset_pushButton.setMinimumSize(QtCore.QSize(300, 120))
+        self.reset_pushButton.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.reset_pushButton.setStyleSheet("background-color: rgb(255, 255, 0);\n"
+                                            "font: 75 30pt \"Arial\";")
+        self.reset_pushButton.setObjectName("reset_pushButton")
+        self.horizontalLayout_5.addWidget(self.reset_pushButton)
+
+        self.retranslateUi(Stopwatch)
+        QtCore.QMetaObject.connectSlotsByName(Stopwatch)
+
+    def retranslateUi(self, Stopwatch):
+        _translate = QtCore.QCoreApplication.translate
+        Stopwatch.setWindowTitle(_translate("Stopwatch", "FPGA Ethernet Stopwatch"))
+        self.colon_label.setText(_translate("Stopwatch", ":"))
+        self.decimal_label.setText(_translate("Stopwatch", "."))
+        self.start_pushButton.setText(_translate("Stopwatch", "Start"))
+        self.stop_pushButton.setText(_translate("Stopwatch", "Stop"))
+        self.reset_pushButton.setText(_translate("Stopwatch", "Reset"))
