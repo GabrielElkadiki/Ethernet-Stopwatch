@@ -1,3 +1,4 @@
 Ethernet_Stopwatch/* linguist-vendored
 IP/* linguist-vendored
 *.v linguist-vendored=false
+*.py linguist-vendored=false
