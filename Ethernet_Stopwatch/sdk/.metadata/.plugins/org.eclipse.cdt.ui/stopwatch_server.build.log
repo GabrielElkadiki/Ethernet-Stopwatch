@@ -1,0 +1,6 @@
+18:21:34 **** Incremental Build of configuration Debug for project stopwatch_server ****
+make all 
+make: Nothing to be done for `all'.
+
+18:21:34 Build Finished (took 259ms)
+
