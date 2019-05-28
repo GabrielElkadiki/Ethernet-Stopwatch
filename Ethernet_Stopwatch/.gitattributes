@@ -2,6 +2,5 @@
 * text=auto
 * linguist-vendored
 *.v linguist-vendored=false
-*.c linguist-vendored=false
 *.py linguist-vendored=false
 *.tcl linguist-vendored=false
