@@ -24,7 +24,7 @@ def refresh_display():
 
 
 main_window_Qdialog.qTimer = QTimer()
-main_window_Qdialog.qTimer.setInterval(10)
+main_window_Qdialog.qTimer.setInterval(20)
 main_window_Qdialog.qTimer.timeout.connect(refresh_display)
 
 main_window_Qdialog.qTimer.start()
