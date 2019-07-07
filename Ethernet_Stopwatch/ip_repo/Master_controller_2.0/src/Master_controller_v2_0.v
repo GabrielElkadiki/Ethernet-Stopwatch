@@ -17,7 +17,7 @@
 		// Users to add ports here
         input twentyFive_mhz_clk,
         // Control input
-        input mode,
+        input updn,
         input reset,
         input start,
         input stop,
@@ -67,7 +67,7 @@
 	) Master_controller_v2_0_S00_AXI_inst (
         .twentyFive_mhz_clk (twentyFive_mhz_clk),
         // Control input
-        .mode (mode),
+        .updn (updn),
         .reset (reset),
         .start (start),
         .stop (stop),

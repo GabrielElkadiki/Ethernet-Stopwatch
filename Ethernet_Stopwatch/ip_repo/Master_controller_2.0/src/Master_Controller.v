@@ -21,10 +21,10 @@
 
 
 
-module Master_Controller(
+module Master_controller(
     input twentyFive_mhz_clk,
     // Control input
-    input mode,
+    input updn,
     input reset,
     input start,
     input stop,
@@ -35,70 +35,61 @@ module Master_Controller(
     input enc_sw,
     // Display Output
     output mode_led,
-    output reg ready_flash,
-    output reg [6:0] seg,
-    output reg [7:0] an,
+    output ready_flash,
+    output [6:0] seg,
+    output [7:0] an,
     // Sound Control
     output speaker,
     // Stopwatch Values
-    output [0:32] stopwatch_val
+    output [0:31] stopwatch_val
     );
-    assign mode_led = mode;
+    assign mode_led = updn;
     //States
     reg ready;
-    reg [4:0] state, nextstate;
-    parameter upWait=0, downWait=1, up=2, down=3, resetState=4, setStateWait=5, setState=6;
+    reg [1:0] state, nextstate;
+    parameter stop_state=0, start_state=1, set_state=2, reset_state=3;
+    reg [3:0] setVal_state, setVal_nextstate;
+    parameter set_none= 0, set_f1=1, set_f2=2, set_f3=3, set_f4=4, set_s1=5, set_s2=6, set_m1=7, set_m2=8;
     // Stopwatch Value registers
     reg [3:0] v_f1;
     reg [3:0] v_f2;
     reg [3:0] v_f3;
     reg [3:0] v_f4;
     reg [3:0] v_s1;
-    reg [2:0] v_s2;
+    reg [3:0] v_s2;
     reg [3:0] v_m1;
     reg [3:0] v_m2;
-    // Set Values
+    // Set Value registers
+     reg [3:0] vSet_f1;
+     reg [3:0] vSet_f2;
+     reg [3:0] vSet_f3;
+     reg [3:0] vSet_f4;
+     reg [3:0] vSet_s1;
+     reg [2:0] vSet_s2;
+     reg [3:0] vSet_m1;
+     reg [3:0] vSet_m2; 
+    // Assign Stopwatch Value to output
     assign stopwatch_val [0:3] = v_f1;
     assign stopwatch_val [4:7] = v_f2;
     assign stopwatch_val [8:11] = v_f3;
     assign stopwatch_val [12:15] = v_f4;
     assign stopwatch_val [16:19] = v_s1;
-    assign stopwatch_val [20:22] = v_s2;
-    assign stopwatch_val [23:26] = v_m1;
-    assign stopwatch_val [27:30] = v_m2;
+    assign stopwatch_val [20:23] = v_s2;
+    assign stopwatch_val [24:27] = v_m1;
+    assign stopwatch_val [28:31] = v_m2;
     // Counter Control
     reg counter_load;
     reg enable;
-    reg updn;
+    reg count_finished;
+    // Set Control
+    reg set;
+    reg [3:0] set_val;
     // Display Control
     integer display;
     reg v_flash;
-    wire [3:0] v_select;
+    reg [2:0] v_select;
     // Sound
-    wire enc_btn_press;
-    wire enc_rotate;
-    wire [3:0] set_val;
-    wire count_finished;
-    wire one_second;
-    // Up/Down Counter Value Registers
-    wire [3:0] vUpDown_f1;
-    wire [3:0] vUpDown_f2;
-    wire [3:0] vUpDown_f3;
-    wire [3:0] vUpDown_f4;
-    wire [3:0] vUpDown_s1;
-    wire [2:0] vUpDown_s2;
-    wire [3:0] vUpDown_m1;
-    wire [3:0] vUpDown_m2;
-    //Set Counter Value Registers
-    reg load_set;
-    wire [3:0] vSet_f1;
-    wire [3:0] vSet_f2;
-    wire [3:0] vSet_f3;
-    wire [3:0] vSet_f4;
-    wire [3:0] vSet_s1;
-    wire [2:0] vSet_s2;
-    wire [3:0] vSet_m1;
-    wire [3:0] vSet_m2;
+    reg one_second;
     // Clock Divider
     wire ten_khz_clk;
     wire refresh_clk;
@@ -112,470 +103,425 @@ module Master_Controller(
         .one_hz_clk         (one_hz_clk),
         .four_khz_clk       (four_khz_clk)
     );
-    
-    always @(posedge refresh_clk or posedge reset) begin
-        if(reset) state <= resetState;
+    // Rotary Encoder Debouncer
+    wire enc_a_db;
+    wire enc_b_db;
+    wire enc_btn_db;
+    wire enc_a_rise;
+    wire enc_b_rise;
+    wire enc_btn_rise;
+    wire enc_a_fall;
+    wire enc_b_fall;
+    wire enc_btn_fall;   
+    debounce #(
+        .width(3),
+        .bounce_limit(50000)
+        ) deb(
+         .clk(twentyFive_mhz_clk),
+         .switch_in({enc_a,enc_b,enc_btn}),
+         .switch_out({enc_a_db,enc_b_db,enc_btn_db}),
+         .switch_rise({enc_a_rise,enc_b_rise,enc_btn_rise}),
+         .switch_fall({enc_a_fall,enc_b_fall,enc_btn_fall})
+     );
+    // Stopwatch control FSM
+    always @(posedge refresh_clk or posedge reset or posedge enc_sw) begin
+        if(reset) state <= reset_state;
+        else if(enc_sw) state <= set_state;
         else state <= nextstate;
     end
-    
-    always @(state or start or mode or stop or enc_sw or enc_btn or count_finished) begin
+    // Set Value control FSM
+    always @(posedge twentyFive_mhz_clk or posedge reset) begin
+        if(reset) setVal_state <= set_f1;
+        else setVal_state <= setVal_nextstate;
+    end
+
+    always @(state or start or stop or enc_sw or count_finished) begin
         case(state)
-            upWait: begin
-                if(enc_sw) nextstate = setStateWait;
-                else if(start & mode) nextstate = up;
-                else if(!mode) nextstate = downWait;
-                else nextstate = upWait;
+            stop_state: begin
+                if(start) nextstate = start_state;
+                else nextstate = stop_state;
             end
-            downWait: begin
-                if(enc_sw) nextstate = setStateWait;
-                else if(start & !mode) nextstate = down;
-                else if (mode) nextstate = upWait;
-                else nextstate = downWait;
+            start_state: begin
+                if(stop | count_finished) nextstate = stop_state;
+                else nextstate = start_state;
             end
-            up: begin
-                if(stop | count_finished) nextstate = upWait;
-                else if(enc_sw) nextstate = setStateWait;
-                else nextstate = up;
+            set_state: begin
+                if(!enc_sw) nextstate = stop_state;
+                else nextstate = set_state;
             end
-            down: begin
-                if(stop | count_finished) nextstate = upWait;
-                else if(enc_sw) nextstate = setStateWait;
-                else nextstate = down;
+            reset_state: begin
+                nextstate = stop_state;
             end
-            resetState: begin
-                if(mode) nextstate = upWait;
-                else if(enc_sw) nextstate = setStateWait;
-                else if(!mode) nextstate = downWait;
-                else nextstate = resetState;
-            end
-            setStateWait: nextstate = setState;
-            setState: begin
-                if(!enc_sw) nextstate = upWait;
-                else nextstate = setState;
-            end
-            default nextstate = upWait;
+            default nextstate = stop_state;
         endcase
     end
-    
-    always @(*) begin
+    always @(setVal_state or enc_btn_fall or enc_sw or v_f1 or v_f2 or v_f3 or v_f4 or v_s1 or v_s2 or v_m1 or v_m2) begin
+        case(setVal_state)
+            set_none: begin
+                v_select = 3'b000;
+                set_val <= v_f1;
+                if(enc_sw) setVal_nextstate = set_f1;
+                else setVal_nextstate = set_none;
+            end
+            set_f1: begin
+                v_select = 3'b000;
+                set_val <= v_f1;
+                if(enc_btn_fall) setVal_nextstate = set_f2;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_f1;
+            end
+            set_f2: begin
+                v_select = 3'b001;
+                set_val <= v_f2;
+                if(enc_btn_fall) setVal_nextstate = set_f3;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_f2;
+            end
+            set_f3: begin
+                v_select = 3'b010;
+                set_val <= v_f3;
+                if(enc_btn_fall) setVal_nextstate = set_f4;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_f3;
+            end
+            set_f4: begin
+                v_select = 3'b011;
+                set_val <= v_f4;
+                if(enc_btn_fall) setVal_nextstate = set_s1;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_f4;
+            end
+            set_s1: begin
+                v_select = 3'b100;
+                set_val <= v_s1;
+                if(enc_btn_fall) setVal_nextstate = set_s2;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_s1;
+            end
+            set_s2: begin
+                v_select = 3'b101;
+                set_val <= v_s2;
+                if(enc_btn_fall) setVal_nextstate = set_m1;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_s2;
+            end
+            set_m1: begin
+                v_select = 3'b110;
+                set_val <= v_m1;
+                if(enc_btn_fall) setVal_nextstate = set_m2;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_m1;
+            end
+            set_m2: begin
+                v_select = 3'b111;
+                set_val <= v_m2;
+                if(enc_btn_fall) setVal_nextstate = set_f1;
+                else if(!enc_sw) setVal_nextstate = set_none;
+                else setVal_nextstate = set_m2;
+            end
+            default: begin
+                v_select = 3'b000;
+                set_val <= v_f1;
+                setVal_nextstate = set_none;
+            end
+        endcase
+    end
+
+    always @(state or set or enable or ready or v_flash) begin
         case(state)
-            upWait: begin
-                counter_load = 1'b1;
-                load_set = 'b1;
+            stop_state: begin
+                set = 'b0;
+                enable = 'b0;
                 ready = 1'b1;
-                enable = 'b0;
-                updn = 1'b1;
-                v_f1 = vUpDown_f1;
-                v_f2 = vUpDown_f2;
-                v_f3 = vUpDown_f3;
-                v_f4 = vUpDown_f4;
-                v_s1 = vUpDown_s1;
-                v_s2 = vUpDown_s2;
-                v_m1 = vUpDown_m1;
-                v_m2 = vUpDown_m2;
                 v_flash = 'b0;
             end
-            downWait: begin
-                counter_load = 1'b1;
-                load_set = 'b1;
-                ready = 1'b1;
-                enable = 'b0;
-                updn = 'b0;
-                v_f1 = vUpDown_f1;
-                v_f2 = vUpDown_f2;
-                v_f3 = vUpDown_f3;
-                v_f4 = vUpDown_f4;
-                v_s1 = vUpDown_s1;
-                v_s2 = vUpDown_s2;
-                v_m1 = vUpDown_m1;
-                v_m2 = vUpDown_m2;
-                v_flash = 'b0;
-            end
-            up: begin
-                counter_load = 'b0;
-                load_set = 'b1;
-                ready = 'b0;
+            start_state: begin
+                set = 'b0;
                 enable = 1'b1;
-                updn = 1'b1;
-                v_f1 = vUpDown_f1;
-                v_f2 = vUpDown_f2;
-                v_f3 = vUpDown_f3;
-                v_f4 = vUpDown_f4;
-                v_s1 = vUpDown_s1;
-                v_s2 = vUpDown_s2;
-                v_m1 = vUpDown_m1;
-                v_m2 = vUpDown_m2;
+                ready = 'b0;
                 v_flash = 'b0;
             end
-            down: begin
-                counter_load = 'b0;
-                load_set = 'b1;
-                ready = 'b0;
-                enable = 1'b1;
-                updn = 'b0;
-                v_f1 = vUpDown_f1;
-                v_f2 = vUpDown_f2;
-                v_f3 = vUpDown_f3;
-                v_f4 = vUpDown_f4;
-                v_s1 = vUpDown_s1;
-                v_s2 = vUpDown_s2;
-                v_m1 = vUpDown_m1;
-                v_m2 = vUpDown_m2;
-                v_flash = 'b0;
-            end
-            setStateWait: begin
-                counter_load = 'b0;
-                load_set = 'b1;
-                ready = 'b0;
+            set_state: begin
+                set = 1'b1;
                 enable = 'b0;
-                updn = 'b0;
-                v_f1 = vSet_f1;
-                v_f2 = vSet_f2;
-                v_f3 = vSet_f3;
-                v_f4 = vSet_f4;
-                v_s1 = vSet_s1;
-                v_s2 = vSet_s2;
-                v_m1 = vSet_m1;
-                v_m2 = vSet_m2;
-                v_flash = 'b0;
-            end
-            setState: begin
-                counter_load = 1'b1;
-                load_set = 'b0;
                 ready = 'b0;
-                enable = 'b0;
-                updn = 'b0;
-                v_f1 = vSet_f1;
-                v_f2 = vSet_f2;
-                v_f3 = vSet_f3;
-                v_f4 = vSet_f4;
-                v_s1 = vSet_s1;
-                v_s2 = vSet_s2;
-                v_m1 = vSet_m1;
-                v_m2 = vSet_m2;
-                v_flash = 'b1;
+                v_flash = 1'b1;
             end
-            resetState: begin
-                counter_load = 'b0;
-                load_set = 'b0;
-                ready = 'b0;
+            reset_state: begin
+                set = 'b0;
                 enable = 'b0;
-                updn = 'b0;
-                v_f1 = 4'b0;
-                v_f2 = 4'b0;
-                v_f3 = 4'b0;
-                v_f4 = 4'b0;
-                v_s1 = 4'b0;
-                v_s2 = 4'b0;
-                v_m1 = 4'b0;
-                v_m2 = 4'b0;
+                ready = 'b0;
                 v_flash = 'b0;
             end
             default: begin
-                counter_load = 'b0;
-                load_set = 'b0;
-                ready = 'b0;
+                set = 'b0;
                 enable = 'b0;
-                updn = 'b0;
-                v_f1 = 4'b0;
-                v_f2 = 4'b0;
-                v_f3 = 4'b0;
-                v_f4 = 4'b0;
-                v_s1 = 4'b0;
-                v_s2 = 4'b0;
-                v_m1 = 4'b0;
-                v_m2 = 4'b0;
+                ready = 'b0;
                 v_flash = 'b0;
             end
         endcase
     end
-    //Set Value
-    set_value setVal(
-       .enc_clk (twentyFive_mhz_clk),
-       // Rotary Encoder inputs
-       .enc_a (enc_a),
-       .enc_b (enc_b),
-       .enc_btn (enc_btn),
-       .enc_sw (enc_sw),
-       // Control inputs
-       .load (load_set),
-       .reset (reset),
-       // Load values
-       .l_f1 (v_f1),
-       .l_f2 (v_f2),
-       .l_f3 (v_f3),
-       .l_f4 (v_f4),
-       .l_s1 (v_s1),
-       .l_s2 (v_s2),
-       .l_m1 (v_m1),
-       .l_m2 (v_m2),
-       // Output values
-       .v_f1 (vSet_f1),
-       .v_f2 (vSet_f2),
-       .v_f3 (vSet_f3),
-       .v_f4 (vSet_f4),
-       .v_s1 (vSet_s1),
-       .v_s2 (vSet_s2),
-       .v_m1 (vSet_m1),
-       .v_m2 (vSet_m2), 
-       // Display control
-       .v_select (v_select),
-       .enc_btn_press (enc_btn_press),
-       .enc_rotate (enc_rotate),
-       .set_val (set_val)
-       );
-    //Up Down Counter
-    up_down_counter upDownCount(
-        // Input Clocks
-        .ten_khz_clk (ten_khz_clk),
-        // Control inputs
-        .updn (updn),
-        .load (counter_load),
-        .enable (enable),
-        .reset (reset),
-        // Load values
-        .l_f1 (v_f1),
-        .l_f2 (v_f2),
-        .l_f3 (v_f3),
-        .l_f4 (v_f4),
-        .l_s1 (v_s1),
-        .l_s2 (v_s2),
-        .l_m1 (v_m1),
-        .l_m2 (v_m2),  
-        // Output values
-        .v_f1 (vUpDown_f1),
-        .v_f2 (vUpDown_f2),
-        .v_f3 (vUpDown_f3),
-        .v_f4 (vUpDown_f4),
-        .v_s1 (vUpDown_s1),
-        .v_s2 (vUpDown_s2),
-        .v_m1 (vUpDown_m1),
-        .v_m2 (vUpDown_m2),
-        // Count finished
-        .count_finished (count_finished),
-        // Sound
-        .one_second (one_second)
-        );
-    // Segment & Annode
-    /////////////////////////////////////// f1
-    wire [6:0] seg_f1;
-    wire [7:0] an_f1;
-    BCD_Decoder f1_bcd(
-        .v      (v_f1),
-        .anum   (3'd0),
-        .seg    (seg_f1),
-        .an     (an_f1)
-    );
-    /////////////////////////////////////// f2
-    wire [6:0] seg_f2;
-    wire [7:0] an_f2;
-    BCD_Decoder f2_bcd(
-        .v      (v_f2),
-        .anum   (3'd1),
-        .seg    (seg_f2),
-        .an     (an_f2)
-    );
-    /////////////////////////////////////// f3
-    wire [6:0] seg_f3;
-    wire [7:0] an_f3;
-    BCD_Decoder f3_bcd(
-        .v      (v_f3),
-        .anum   (3'd2),
-        .seg    (seg_f3),
-        .an     (an_f3)
-    );
-    /////////////////////////////////////// f4
-    wire [6:0] seg_f4;
-    wire [7:0] an_f4;
-    BCD_Decoder f4_bcd(
-        .v      (v_f4),
-        .anum   (3'd3),
-        .seg    (seg_f4),
-        .an     (an_f4)
-    );
-    /////////////////////////////////////// s1
-    wire [6:0] seg_s1;
-    wire [7:0] an_s1;
-    BCD_Decoder s1_bcd(
-        .v      (v_s1),
-        .anum   (3'd4),
-        .seg    (seg_s1),
-        .an     (an_s1)
-    );
-    /////////////////////////////////////// s2
-    wire [6:0] seg_s2;
-    wire [7:0] an_s2;
-    BCD_Decoder s2_bcd(
-        .v      (v_s2),
-        .anum   (3'd5),
-        .seg    (seg_s2),
-        .an     (an_s2)
-    );
-    /////////////////////////////////////// m1
-    wire [6:0] seg_m1;
-    wire [7:0] an_m1;
-    BCD_Decoder m1_bcd(
-        .v      (v_m1),
-        .anum   (3'd6),
-        .seg    (seg_m1),
-        .an     (an_m1)
-    );
-  /////////////////////////////////////// m2
-    wire [6:0] seg_m2;
-    wire [7:0] an_m2;
-    BCD_Decoder m2_bcd(
-        .v      (v_m2),
-        .anum   (3'd7),
-        .seg    (seg_m2),
-        .an     (an_m2)
-    );
-    integer v_flash_count = 0;
-    reg v_toggle = 0;
-    always @(posedge refresh_clk) begin
-    if(v_flash_count == 300) begin
-        v_flash_count = 0;
-        v_toggle = !v_toggle;
-    end
-      case(display)
-        9: display = 0;
-        8: begin
-            if(v_flash & v_select == 3'b111) begin
-                 if(v_toggle) seg[6:0] <= seg_m2[6:0]; 
-                 else seg[6:0] <= 7'b1111111;
+    
+    always@(posedge ten_khz_clk or posedge reset) begin
+        if(reset) begin
+            v_f1 <= 'b0;
+            v_f2 <= 'b0;
+            v_f3 <= 'b0;
+            v_f4 <= 'b0;
+            v_s1 <= 'b0;
+            v_s2 <= 'b0;
+            v_m1 <= 'b0;
+            v_m2 <= 'b0;
+            count_finished <= 'b0;
+            one_second <= 'b0;
+        end
+        else if(set) begin
+            v_f1 <= vSet_f1;
+            v_f2 <= vSet_f2;
+            v_f3 <= vSet_f3;
+            v_f4 <= vSet_f4;
+            v_s1 <= vSet_s1;
+            v_s2 <= vSet_s2;
+            v_m1 <= vSet_m1;
+            v_m2 <= vSet_m2;
+            count_finished <= 'b0;
+            one_second <= 'b0;
+        end
+        else if(enable) begin
+            if(state == stop_state) count_finished <= 'b0;
+            if(updn) begin
+                if(v_f1 == 4'd9 & v_f2 < 4'd9) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= v_f2 + 4'b0001;
+                end
+                else if(v_f1 < 4'd9) begin
+                    v_f1 = v_f1 + 4'b0001;
+                    count_finished <= 'b0;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 < 4'd9) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= 4'd0;
+                    v_f3 <= v_f3 + 4'b0001;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 < 4'd9) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= 4'd0;
+                    v_f3 <= 4'd0;
+                    v_f4 <= v_f4 + 4'b0001;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 == 4'd9 & v_s1 < 4'd9) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= 4'd0;
+                    v_f3 <= 4'd0;
+                    v_f4 <= 4'd0;
+                    v_s1 <= v_s1 + 4'b0001;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 == 4'd9 & v_s1 == 4'd9 & v_s2 < 4'd5) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= 4'd0;
+                    v_f3 <= 4'd0;
+                    v_f4 <= 4'd0;
+                    v_s1 <= 4'd0;
+                    v_s2 <= v_s2 + 4'b0001;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 == 4'd9 & v_s1 == 4'd9 & v_s2 == 4'd5 & v_m1 < 4'd9) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= 4'd0;
+                    v_f3 <= 4'd0;
+                    v_f4 <= 4'd0;
+                    v_s1 <= 4'd0;
+                    v_s2 <= 4'd0;
+                    v_m1 <= v_m1 + 4'b0001;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 == 4'd9 & v_s1 == 4'd9 & v_s2 == 4'd5 & v_m1 == 4'd9 & v_m2 < 4'd5) begin
+                    v_f1 <= 4'd0;
+                    v_f2 <= 4'd0;
+                    v_f3 <= 4'd0;
+                    v_f4 <= 4'd0;
+                    v_s1 <= 4'd0;
+                    v_s2 <= 4'd0;
+                    v_m1 <= 4'd0;
+                    v_m2 <= v_m2 + 4'b0001;
+                end
+                else if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 == 4'd9 & v_s1 == 4'd9 & v_s2 == 4'd5 & v_m1 == 4'd9 & v_m2 == 4'd5) begin
+                    count_finished <= 1'b1;
+                end
+                if(v_f1 == 4'd9 & v_f2 == 4'd9 & v_f3 == 4'd9 & v_f4 == 4'd9) one_second <= 1'b1;
+                else one_second <= 'b0;
             end
             else begin
-                seg[6:0] <= seg_m2[6:0];; 
+                if(v_f1 == 4'd0 & v_f2 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= v_f2 - 4'b0001;
+                end
+                else if(v_f1 > 4'b0) begin
+                    v_f1 <= v_f1 - 4'b0001;
+                    count_finished <= 'b0;
+                end
+                else if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= 4'd9;
+                    v_f3 = v_f3 - 4'b0001;
+                end
+                else if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= 4'd9;
+                    v_f3 <= 4'd9;
+                    v_f4 <= v_f4 - 4'b0001;
+                end
+                else if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 == 4'd0 & v_s1 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= 4'd9;
+                    v_f3 <= 4'd9;
+                    v_f4 <= 4'd9;
+                    v_s1 <= v_s1 - 4'b0001;
+                end
+                else if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 == 4'd0 & v_s1 == 4'd0 & v_s2 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= 4'd9;
+                    v_f3 <= 4'd9;
+                    v_f4 <= 4'd9;
+                    v_s1 <= 4'd9;
+                    v_s2 <= v_s2 - 4'b0001;
+                end
+                else if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 == 4'd0 & v_s1 == 4'd0 & v_s2 == 4'd0 & v_m1 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= 4'd9;
+                    v_f3 <= 4'd9;
+                    v_f4 <= 4'd9;
+                    v_s1 <= 4'd9;
+                    v_s2 <= 4'd5;
+                    v_m1 <= v_m1 - 4'b0001;
+                end
+                else if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 == 4'd0 & v_s1 == 4'd0 & v_s2 == 4'd0 & v_m1 == 4'd0 & v_m2 > 4'd0) begin
+                    v_f1 <= 4'd9;
+                    v_f2 <= 4'd9;
+                    v_f3 <= 4'd9;
+                    v_f4 <= 4'd9;
+                    v_s1 <= 4'd9;
+                    v_s2 <= 4'd5;
+                    v_m1 <= 4'd9;
+                    v_m2 <= v_m2 - 4'b0001;
+                end
+                else if (v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 == 4'd0 & v_s1 == 4'd0 & v_s2 == 4'd0 & v_m1 == 4'd0 & v_m2 == 4'd0) begin
+                    count_finished <= 1;
+                end
+                if(v_f1 == 4'd0 & v_f2 == 4'd0 & v_f3 == 4'd0 & v_f4 == 4'd0) one_second <= 1'b1;
+                else one_second <= 'b0;
             end
-            an[7:0] <= an_m2[7:0];
         end
-        7: begin
-             if(v_flash & v_select == 3'b110) begin
-                if(v_toggle) seg[6:0] <= seg_m1[6:0]; 
-                else seg[6:0] <= 7'b1111111;
-            end
-            else begin
-                seg[6:0] <= seg_m1[6:0]; 
-            end
-                an[7:0] <= an_m1[7:0];
-        end
-        6: begin
-            if(v_flash & v_select == 3'b101) begin
-                if(v_toggle) seg[6:0] <= seg_s2[6:0]; 
-                else seg[6:0] <= 7'b1111111;
-            end
-            else begin
-                seg[6:0] <= seg_s2[6:0];; 
-            end
-                an[7:0] <= an_s2[7:0];
-        end
-        5: begin
-            if(v_flash & v_select == 3'b100) begin
-                if(v_toggle) seg[6:0] <= seg_s1[6:0]; 
-                else seg[6:0] <= 7'b1111111;
-            end
-            else begin
-                seg[6:0] <= seg_s1[6:0];; 
-            end
-                an[7:0] <= an_s1[7:0];
-            end
-        4: begin
-            if(v_flash & v_select == 3'b011) begin
-                if(v_toggle) seg[6:0] <= seg_f4[6:0]; 
-                else seg[6:0] <= 7'b1111111;
-            end
-            else begin
-                seg[6:0] <= seg_f4[6:0]; 
-            end
-            an[7:0] <= an_f4[7:0];
-        end
-        3: begin
-            if(v_flash & v_select == 3'b010) begin
-                if(v_toggle) seg[6:0] <= seg_f3[6:0]; 
-                else seg[6:0] <= 7'b1111111;
-            end
-            else begin
-                seg[6:0] <= seg_f3[6:0];; 
-            end
-            an[7:0] <= an_f3[7:0];
-        end
-        2: begin
-            if(v_flash & v_select == 3'b001) begin
-                if(v_toggle) seg[6:0] <= seg_f2[6:0]; 
-                else seg[6:0] <= 7'b1111111;
-            end
-            else begin
-                seg[6:0] <= seg_f2[6:0]; 
-            end
-            an[7:0] <= an_f2[7:0];
-        end
-        1: begin
-          if(v_flash & v_select == 3'b000) begin
-               if(v_toggle) seg[6:0] <= seg_f1[6:0]; 
-               else seg[6:0] <= 7'b1111111;
-          end
-          else begin
-              seg[6:0] <= seg_f1[6:0]; 
-          end
-          an[7:0] <= an_f1[7:0];
-        end
-        endcase
-        display = display + 1;
-        v_flash_count = v_flash_count + 1;
     end
     
-    // Ready On Flash
-    always @ (posedge one_hz_clk) begin
-        if(ready) begin 
-            ready_flash = !ready_flash;
+    always@(posedge twentyFive_mhz_clk or posedge reset) begin
+		if(reset) begin
+            vSet_f1 <= 'b0;
+            vSet_f2 <= 'b0;
+            vSet_f3 <= 'b0;
+            vSet_f4 <= 'b0;
+            vSet_s1 <= 'b0;
+            vSet_s2 <= 'b0;
+            vSet_m1 <= 'b0;
+            vSet_m2 <= 'b0;
         end
-        else ready_flash = 'b0;
+        else if(setVal_state == set_none) begin
+            vSet_f1 <= v_f1;
+            vSet_f2 <= v_f2;
+            vSet_f3 <= v_f3;
+            vSet_f4 <= v_f4;
+            vSet_s1 <= v_s1;
+            vSet_s2 <= v_s2;
+            vSet_m1 <= v_m1;
+            vSet_m2 <= v_m2;
+        end
+		else begin
+			if (enc_a_rise)
+				if (!enc_b_db)
+					case(setVal_state)
+						set_f1: if(vSet_f1 > 0) vSet_f1 <= vSet_f1-1;
+						set_f2: if(vSet_f2 > 0) vSet_f2 <= vSet_f2-1;
+						set_f3: if(vSet_f3 > 0) vSet_f3 <= vSet_f3-1;
+						set_f4: if(vSet_f4 > 0) vSet_f4 <= vSet_f4-1;
+						set_s1: if(vSet_s1 > 0) vSet_s1 <= vSet_s1-1;
+						set_s2: if(vSet_s2 > 0) vSet_s2 <= vSet_s2-1;
+						set_m1: if(vSet_m1 > 0) vSet_m1 <= vSet_m1-1;
+						set_m2: if(vSet_m2 > 0) vSet_m2 <= vSet_m2-1;
+						default: begin
+							vSet_f1 <= v_f1;
+							vSet_f2 <= v_f2;
+							vSet_f3 <= v_f3;
+							vSet_f4 <= v_f4;
+							vSet_s1 <= v_s1;
+							vSet_s2 <= v_s2;
+							vSet_m1 <= v_m1;
+							vSet_m2 <= v_m2;
+						end
+					endcase
+			else if(enc_b_db)
+				case(setVal_state)
+					set_none: begin
+						vSet_f1 <= v_f1;
+						vSet_f2 <= v_f2;
+						vSet_f3 <= v_f3;
+						vSet_f4 <= v_f4;
+						vSet_s1 <= v_s1;
+						vSet_s2 <= v_s2;
+						vSet_m1 <= v_m1;
+						vSet_m2 <= v_m2;
+					end
+					set_f1: if(vSet_f1 < 9) vSet_f1 <= vSet_f1+1;
+					set_f2: if(vSet_f2 < 9) vSet_f2 <= vSet_f2+1;
+					set_f3: if(vSet_f3 < 9) vSet_f3 <= vSet_f3+1;
+					set_f4: if(vSet_f4 < 9) vSet_f4 <= vSet_f4+1;
+					set_s1: if(vSet_s1 < 9) vSet_s1 <= vSet_s1+1;
+					set_s2: if(vSet_s2 < 5) vSet_s2 <= vSet_s2+1;
+					set_m1: if(vSet_m1 < 9) vSet_m1 <= vSet_m1+1;
+					set_m2: if(vSet_m2 < 5) vSet_m2 <= vSet_m2+1;
+					default: begin
+						vSet_f1 <= v_f1;
+						vSet_f2 <= v_f2;
+						vSet_f3 <= v_f3;
+						vSet_f4 <= v_f4;
+						vSet_s1 <= v_s1;
+						vSet_s2 <= v_s2;
+						vSet_m1 <= v_m1;
+						vSet_m2 <= v_m2;
+					end
+				endcase
+		end
     end
     
-    wire adjusted_clk;
-    variable_clk_divider var_clk_div(
-        .clk            (ten_khz_clk),
-        .set_val        (set_val),
-        .adjusted_clk   (adjusted_clk)
+    Display_controller disp_cont(
+        .refresh_clk    (refresh_clk),
+        .one_hz_clk     (one_hz_clk),
+        .ready          (ready),
+        .v_f1           (v_f1),
+        .v_f2           (v_f2),
+        .v_f3           (v_f3),
+        .v_f4           (v_f4),
+        .v_s1           (v_s1),
+        .v_s2           (v_s2),
+        .v_m1           (v_m1),
+        .v_m2           (v_m2),
+        .v_select       (v_select),
+        .v_flash        (v_flash),
+        .ready_flash    (ready_flash),
+        .seg            (seg),
+        .an             (an)
     );
 
-    
-    reg sound_on;
-    reg adj_sound_on;
-    integer count_sound_on = 0;
-    integer count_adj_sound_on = 0;
-    reg speaker_main;
-    reg speaker_adj;
-    always @(posedge twentyFive_mhz_clk) begin
-        if(one_second & enable) count_sound_on = 400000;
-        else if(count_finished & enable) count_sound_on = 300000;
-        else if(enc_btn_press & enc_sw) count_sound_on = 300000;
-        else if(enc_rotate & enc_sw) count_adj_sound_on = 300000;
-        else sound_on = 0;
-        
-        if(count_sound_on > 0) begin
-            sound_on = 1;
-            count_sound_on = count_sound_on - 1;
-        end
-        else if(count_sound_on == 0) sound_on = 0;
-        
-        if(count_adj_sound_on > 0) begin
-            adj_sound_on = 1;
-            count_adj_sound_on = count_adj_sound_on - 1;
-        end
-        else if(count_adj_sound_on == 0) adj_sound_on = 0;
-
-    end
-    
-    always @(posedge four_khz_clk) begin
-        if(sound_on) speaker_main <= !speaker_main;
-        else speaker_main <= 0;
-    end
-    
-    always @(posedge adjusted_clk) begin
-        if(adj_sound_on) speaker_adj <= !speaker_adj;
-        else speaker_adj <= 0;
-    end
-    
-    assign speaker = speaker_adj | speaker_main;
+    Sound_controller sound_cont(
+        .twentyFive_mhz_clk (twentyFive_mhz_clk),
+        .ten_khz_clk        (ten_khz_clk),
+        .four_khz_clk       (four_khz_clk),
+        .one_hz_clk         (one_hz_clk),
+        .enable             (enable),
+        .one_second         (one_second),
+        .count_finished     (count_finished),
+        .enc_btn_press      (enc_btn_fall),
+        .enc_sw             (enc_sw),
+        .enc_rotate         (enc_a_rise),
+        .set_val            (set_val),
+        .speaker            (speaker)
+    );
 
 endmodule

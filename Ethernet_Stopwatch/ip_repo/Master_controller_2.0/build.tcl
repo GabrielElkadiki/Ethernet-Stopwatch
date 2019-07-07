@@ -29,14 +29,13 @@
 #
 #    "src/debounce.v"
 #    "src/clk_divider.v"
-#    "src/set_value.v"
+#    "src/Display_controller.v"
 #    "src/BCD_Decoder.v"
-#    "src/up_down_counter.v"
+#    "src/Sound_controller.v"
 #    "src/variable_clk_divider.v"
 #    "src/Master_Controller.v"
 #    "src/Master_controller_v2_0_S00_AXI.v"
 #    "src/Master_controller_v2_0.v"
-#    "component.xml"
 #
 #*****************************************************************************************
 
@@ -130,14 +129,13 @@ set obj [get_filesets sources_1]
 set files [list \
  "[file normalize "$origin_dir/src/debounce.v"]"\
  "[file normalize "$origin_dir/src/clk_divider.v"]"\
- "[file normalize "$origin_dir/src/set_value.v"]"\
+ "[file normalize "$origin_dir/src/Display_controller.v"]"\
  "[file normalize "$origin_dir/src/BCD_Decoder.v"]"\
- "[file normalize "$origin_dir/src/up_down_counter.v"]"\
+ "[file normalize "$origin_dir/src/Sound_controller.v"]"\
  "[file normalize "$origin_dir/src/variable_clk_divider.v"]"\
  "[file normalize "$origin_dir/src/Master_Controller.v"]"\
  "[file normalize "$origin_dir/src/Master_controller_v2_0_S00_AXI.v"]"\
  "[file normalize "$origin_dir/src/Master_controller_v2_0.v"]"\
- "[file normalize "$origin_dir/component.xml"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -154,7 +152,7 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_implementation" "0" $file_obj
 
-set file "$origin_dir/src/set_value.v"
+set file "$origin_dir/src/Display_controller.v"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "used_in" "synthesis simulation" $file_obj
@@ -166,7 +164,7 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_implementation" "0" $file_obj
 
-set file "$origin_dir/src/up_down_counter.v"
+set file "$origin_dir/src/Sound_controller.v"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "used_in" "synthesis simulation" $file_obj
@@ -195,11 +193,6 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property "used_in" "synthesis simulation" $file_obj
 set_property "used_in_implementation" "0" $file_obj
-
-set file "$origin_dir/component.xml"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property "file_type" "IP-XACT" $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files

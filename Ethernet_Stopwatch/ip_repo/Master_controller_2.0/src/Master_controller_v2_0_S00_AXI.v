@@ -17,7 +17,7 @@
 		// Users to add ports here
         input twentyFive_mhz_clk,
         // Control input
-        input mode,
+        input updn,
         input reset,
         input start,
         input stop,
@@ -539,16 +539,24 @@
 	end    
 
 	// Add user logic here
-	wire [0:32] stopwatch_val;
+    //	   stopwatch_val [0:3] = v_f1;
+    //     stopwatch_val [4:7] = v_f2;
+    //     stopwatch_val [8:11] = v_f3;
+    //     stopwatch_val [12:15] = v_f4;
+    //     stopwatch_val [16:19] = v_s1;
+    //     stopwatch_val [20:23] = v_s2;
+    //     stopwatch_val [24:27] = v_m1;
+    //     stopwatch_val [28:31] = v_m2;
+	wire [0:31] stopwatch_val;
 	always@(stopwatch_val) begin
 	   slv_reg0 <= stopwatch_val [0:3];
 	   slv_reg1 <= stopwatch_val [4:7];
 	   slv_reg2 <= stopwatch_val [8:11];
 	   slv_reg3 <= stopwatch_val [12:15];
 	   slv_reg4 <= stopwatch_val [16:19];
-	   slv_reg5 <= stopwatch_val [20:22];
-	   slv_reg6 <= stopwatch_val [23:26];
-	   slv_reg7 <= stopwatch_val [27:30];
+	   slv_reg5 <= stopwatch_val [20:23];
+	   slv_reg6 <= stopwatch_val [24:27];
+	   slv_reg7 <= stopwatch_val [28:31];
 	end
     wire start_control;
     wire stop_control;
@@ -556,10 +564,10 @@
     assign start_control = start | (!slv_reg8[0] & slv_reg8[1]);
     assign stop_control = stop | (slv_reg8[0] & !slv_reg8[1]);
     assign reset_control = reset | (slv_reg8[0] & slv_reg8[1]);
-    Master_Controller masControl(
+    Master_controller masControl(
         .twentyFive_mhz_clk (twentyFive_mhz_clk),
         // Control input
-        .mode (mode),
+        .updn (updn),
         .reset (reset_control),
         .start (start_control),
         .stop (stop_control),
