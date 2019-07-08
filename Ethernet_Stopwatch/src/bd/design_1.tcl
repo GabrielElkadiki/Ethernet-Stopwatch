@@ -417,10 +417,15 @@ CONFIG.PHASE {0.000} \
   # Create instance: Master_controller_v2_0_0, and set properties
   set Master_controller_v2_0_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:Master_controller_v2_0:2.0 Master_controller_v2_0_0 ]
 
+  set_property -dict [ list \
+CONFIG.NUM_READ_OUTSTANDING {1} \
+CONFIG.NUM_WRITE_OUTSTANDING {1} \
+ ] [get_bd_intf_pins /Master_controller_v2_0_0/s00_axi]
+
   # Create instance: axi_ethernetlite_0, and set properties
   set axi_ethernetlite_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernetlite:3.0 axi_ethernetlite_0 ]
   set_property -dict [ list \
-CONFIG.MDIO_BOARD_INTERFACE {Custom} \
+CONFIG.MDIO_BOARD_INTERFACE {eth_mdio_mdc} \
 CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_ethernetlite_0
 
@@ -437,7 +442,7 @@ CONFIG.NUM_SI {2} \
   # Create instance: axi_uartlite_0, and set properties
   set axi_uartlite_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_0 ]
   set_property -dict [ list \
-CONFIG.UARTLITE_BOARD_INTERFACE {Custom} \
+CONFIG.UARTLITE_BOARD_INTERFACE {usb_uart} \
 CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_uartlite_0
 
@@ -470,7 +475,7 @@ CONFIG.MMCM_COMPENSATION {ZHOLD} \
 CONFIG.MMCM_DIVCLK_DIVIDE {1} \
 CONFIG.NUM_OUT_CLKS {4} \
 CONFIG.PRIM_SOURCE {Single_ended_clock_capable_pin} \
-CONFIG.RESET_BOARD_INTERFACE {Custom} \
+CONFIG.RESET_BOARD_INTERFACE {reset} \
 CONFIG.RESET_PORT {resetn} \
 CONFIG.RESET_TYPE {ACTIVE_LOW} \
 CONFIG.USE_BOARD_FLOW {true} \
@@ -532,7 +537,7 @@ CONFIG.NUM_MI {5} \
   write_mig_file_design_1_mig_7series_0_0 $str_mig_file_path
 
   set_property -dict [ list \
-CONFIG.RESET_BOARD_INTERFACE {Custom} \
+CONFIG.RESET_BOARD_INTERFACE {reset} \
 CONFIG.XML_INPUT_FILE {board.prj} \
  ] $mig_7series_0
 
@@ -544,14 +549,14 @@ CONFIG.XML_INPUT_FILE.VALUE_SRC {DEFAULT} \
   # Create instance: mii_to_rmii_0, and set properties
   set mii_to_rmii_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mii_to_rmii:2.0 mii_to_rmii_0 ]
   set_property -dict [ list \
-CONFIG.RESET_BOARD_INTERFACE {Custom} \
-CONFIG.RMII_BOARD_INTERFACE {Custom} \
+CONFIG.RESET_BOARD_INTERFACE {reset} \
+CONFIG.RMII_BOARD_INTERFACE {eth_rmii} \
  ] $mii_to_rmii_0
 
   # Create instance: rst_clk_wiz_1_100M, and set properties
   set rst_clk_wiz_1_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_clk_wiz_1_100M ]
   set_property -dict [ list \
-CONFIG.RESET_BOARD_INTERFACE {Custom} \
+CONFIG.RESET_BOARD_INTERFACE {reset} \
 CONFIG.USE_BOARD_FLOW {true} \
  ] $rst_clk_wiz_1_100M
 
@@ -600,6 +605,7 @@ CONFIG.USE_BOARD_FLOW {true} \
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins rst_mig_7series_0_75M/dcm_locked]
   connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins axi_mem_intercon/M00_ACLK] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins rst_mig_7series_0_75M/slowest_sync_clk]
   connect_bd_net -net mig_7series_0_ui_clk_sync_rst [get_bd_pins mig_7series_0/ui_clk_sync_rst] [get_bd_pins rst_mig_7series_0_75M/ext_reset_in]
+  connect_bd_net -net mode_1 [get_bd_ports updn] [get_bd_pins Master_controller_v2_0_0/updn]
   connect_bd_net -net reset_1 [get_bd_ports reset] [get_bd_pins clk_wiz_1/resetn] [get_bd_pins mig_7series_0/sys_rst] [get_bd_pins mii_to_rmii_0/rst_n] [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
   connect_bd_net -net rst_clk_wiz_1_100M_bus_struct_reset [get_bd_pins microblaze_0_local_memory/SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/bus_struct_reset]
   connect_bd_net -net rst_clk_wiz_1_100M_interconnect_aresetn [get_bd_pins axi_mem_intercon/ARESETN] [get_bd_pins microblaze_0_axi_periph/ARESETN] [get_bd_pins rst_clk_wiz_1_100M/interconnect_aresetn]
@@ -610,7 +616,6 @@ CONFIG.USE_BOARD_FLOW {true} \
   connect_bd_net -net stop_1 [get_bd_ports stop] [get_bd_pins Master_controller_v2_0_0/stop]
   connect_bd_net -net stopwatch_reset_1 [get_bd_ports stopwatch_reset] [get_bd_pins Master_controller_v2_0_0/reset]
   connect_bd_net -net sys_clock_1 [get_bd_ports sys_clock] [get_bd_pins clk_wiz_1/clk_in1]
-  connect_bd_net -net updn_1 [get_bd_ports updn] [get_bd_pins Master_controller_v2_0_0/updn]
 
   # Create address segments
   create_bd_addr_seg -range 0x00010000 -offset 0x44A00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs Master_controller_v2_0_0/s00_axi/reg0] SEG_Master_controller_v2_0_0_reg0
@@ -625,6 +630,7 @@ CONFIG.USE_BOARD_FLOW {true} \
 
   # Perform GUI Layout
   regenerate_bd_layout -layout_string {
+   commentid: "",
    guistr: "# # String gsaved with Nlview 6.6.5b  2016-09-06 bk=1.3687 VDI=39 GEI=35 GUI=JA:1.6
 #  -string -flagsOSRD
 preplace port enc_sw -pg 1 -y 1090 -defaultsOSRD
@@ -635,8 +641,8 @@ preplace port enc_btn -pg 1 -y 1070 -defaultsOSRD
 preplace port enc_b -pg 1 -y 1050 -defaultsOSRD
 preplace port eth_mdio_mdc -pg 1 -y 390 -defaultsOSRD
 preplace port stop -pg 1 -y 1010 -defaultsOSRD
+preplace port sys_clock -pg 1 -y 770 -defaultsOSRD
 preplace port start -pg 1 -y 990 -defaultsOSRD
-preplace port sys_clock -pg 1 -y 790 -defaultsOSRD
 preplace port speaker -pg 1 -y 1060 -defaultsOSRD
 preplace port usb_uart -pg 1 -y 800 -defaultsOSRD
 preplace port eth_rmii -pg 1 -y 460 -defaultsOSRD
@@ -644,7 +650,7 @@ preplace port DDR2 -pg 1 -y 120 -defaultsOSRD
 preplace port eth_ref_clk -pg 1 -y 590 -defaultsOSRD
 preplace port stopwatch_reset -pg 1 -y 970 -defaultsOSRD
 preplace port updn -pg 1 -y 950 -defaultsOSRD
-preplace port reset -pg 1 -y 870 -defaultsOSRD
+preplace port reset -pg 1 -y 850 -defaultsOSRD
 preplace portBus an -pg 1 -y 1040 -defaultsOSRD
 preplace portBus seg -pg 1 -y 1020 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 7 -y 170 -defaultsOSRD
@@ -656,48 +662,48 @@ preplace inst mii_to_rmii_0 -pg 1 -lvl 7 -y 460 -defaultsOSRD
 preplace inst microblaze_0_axi_intc -pg 1 -lvl 4 -y 480 -defaultsOSRD
 preplace inst mdm_1 -pg 1 -lvl 4 -y 670 -defaultsOSRD
 preplace inst axi_ethernetlite_0 -pg 1 -lvl 6 -y 390 -defaultsOSRD
-preplace inst Master_controller_v2_0_0 -pg 1 -lvl 7 -y 1020 -defaultsOSRD
 preplace inst microblaze_0 -pg 1 -lvl 5 -y 510 -defaultsOSRD
 preplace inst axi_uartlite_0 -pg 1 -lvl 7 -y 810 -defaultsOSRD
+preplace inst Master_controller_v2_0_0 -pg 1 -lvl 7 -y 1020 -defaultsOSRD
 preplace inst rst_clk_wiz_1_100M -pg 1 -lvl 2 -y 660 -defaultsOSRD
 preplace inst microblaze_0_local_memory -pg 1 -lvl 6 -y 530 -defaultsOSRD
-preplace inst clk_wiz_1 -pg 1 -lvl 1 -y 780 -defaultsOSRD
+preplace inst clk_wiz_1 -pg 1 -lvl 1 -y 760 -defaultsOSRD
 preplace inst axi_mem_intercon -pg 1 -lvl 6 -y 140 -defaultsOSRD
-preplace netloc start_1 1 0 7 NJ 990 NJ 990 NJ 990 NJ 990 NJ 990 NJ 990 NJ
 preplace netloc stopwatch_reset_1 1 0 7 NJ 970 NJ 970 NJ 970 NJ 970 NJ 970 NJ 970 NJ
-preplace netloc updn_1 1 0 7 NJ 950 NJ 950 NJ 950 NJ 950 NJ 950 NJ 950 NJ
+preplace netloc start_1 1 0 7 NJ 990 NJ 990 NJ 990 NJ 990 NJ 990 NJ 990 NJ
 preplace netloc mig_7series_0_mmcm_locked 1 4 4 1240 310 NJ 310 NJ 310 2320
-preplace netloc axi_ethernetlite_0_MDIO 1 6 2 NJ 390 NJ
 preplace netloc mig_7series_0_DDR2 1 7 1 NJ
 preplace netloc microblaze_0_axi_periph_M04_AXI 1 3 4 850 910 NJ 910 NJ 910 NJ
+preplace netloc axi_ethernetlite_0_MDIO 1 6 2 NJ 390 NJ
+preplace netloc mode_1 1 0 7 NJ 950 NJ 950 NJ 950 NJ 950 NJ 950 NJ 950 NJ
 preplace netloc Master_controller_v2_0_0_ready_flash 1 7 1 NJ
 preplace netloc microblaze_0_intr 1 3 1 890
-preplace netloc Master_controller_v2_0_0_mode_led 1 7 1 NJ
 preplace netloc microblaze_0_Clk 1 1 6 180 810 560 810 880 810 1240 810 1760 810 2080
+preplace netloc Master_controller_v2_0_0_mode_led 1 7 1 NJ
 preplace netloc microblaze_0_interrupt 1 4 1 N
 preplace netloc microblaze_0_intc_axi 1 3 1 910
 preplace netloc microblaze_0_axi_periph_M03_AXI 1 3 1 850
-preplace netloc Master_controller_v2_0_0_an 1 7 1 NJ
 preplace netloc Master_controller_v2_0_0_seg 1 7 1 NJ
+preplace netloc Master_controller_v2_0_0_an 1 7 1 NJ
 preplace netloc microblaze_0_ilmb_1 1 5 1 1700
 preplace netloc microblaze_0_M_AXI_DC 1 5 1 1710
 preplace netloc axi_mem_intercon_M00_AXI 1 6 1 N
-preplace netloc enc_b_1 1 0 7 NJ 1050 NJ 1050 NJ 1050 NJ 1050 NJ 1050 NJ 1050 NJ
 preplace netloc sys_clock_1 1 0 1 NJ
+preplace netloc enc_b_1 1 0 7 NJ 1050 NJ 1050 NJ 1050 NJ 1050 NJ 1050 NJ 1050 NJ
 preplace netloc microblaze_0_axi_dp 1 2 4 570 110 NJ 110 NJ 110 1690
 preplace netloc stop_1 1 0 7 NJ 1010 NJ 1010 NJ 1010 NJ 1010 NJ 1010 NJ 1010 NJ
 preplace netloc mig_7series_0_ui_clk 1 4 4 1240 130 1750 300 NJ 300 2330
 preplace netloc mii_to_rmii_0_RMII_PHY_M 1 7 1 NJ
-preplace netloc enc_a_1 1 0 7 NJ 1030 NJ 1030 NJ 1030 NJ 1030 NJ 1030 NJ 1030 NJ
 preplace netloc rst_clk_wiz_1_100M_interconnect_aresetn 1 2 4 530 80 NJ 80 NJ 80 1780J
 preplace netloc rst_clk_wiz_1_100M_bus_struct_reset 1 2 4 540J 120 NJ 120 NJ 120 1730
+preplace netloc enc_a_1 1 0 7 NJ 1030 NJ 1030 NJ 1030 NJ 1030 NJ 1030 NJ 1030 NJ
 preplace netloc microblaze_0_axi_periph_M01_AXI 1 3 4 870 790 NJ 790 NJ 790 NJ
 preplace netloc microblaze_0_M_AXI_IC 1 5 1 1740
-preplace netloc Master_controller_v2_0_0_speaker 1 7 1 NJ
-preplace netloc enc_sw_1 1 0 7 NJ 1090 NJ 1090 NJ 1090 NJ 1090 NJ 1090 NJ 1090 NJ
 preplace netloc rst_clk_wiz_1_100M_peripheral_aresetn 1 2 5 570 830 900 830 NJ 830 1770 830 2060
 preplace netloc rst_clk_wiz_1_100M_mb_reset 1 2 3 550J 580 910 580 1230J
+preplace netloc enc_sw_1 1 0 7 NJ 1090 NJ 1090 NJ 1090 NJ 1090 NJ 1090 NJ 1090 NJ
 preplace netloc clk_wiz_1_locked 1 1 1 200
+preplace netloc Master_controller_v2_0_0_speaker 1 7 1 NJ
 preplace netloc axi_uartlite_0_UART 1 7 1 NJ
 preplace netloc mig_7series_0_ui_clk_sync_rst 1 4 4 1230 320 NJ 320 NJ 320 2340
 preplace netloc clk_wiz_1_clk_out2 1 1 6 NJ 760 NJ 760 NJ 760 NJ 760 NJ 760 2050
@@ -707,10 +713,10 @@ preplace netloc microblaze_0_axi_periph_M02_AXI 1 3 3 N 370 NJ 370 NJ
 preplace netloc clk_wiz_1_clk_out3 1 1 7 NJ 780 NJ 780 NJ 780 NJ 780 NJ 780 2080 590 NJ
 preplace netloc microblaze_0_debug 1 4 1 1220
 preplace netloc axi_ethernetlite_0_MII 1 6 1 2080
-preplace netloc clk_wiz_1_clk_out4 1 1 6 NJ 800 NJ 800 NJ 800 NJ 800 NJ 800 2040
 preplace netloc rst_mig_7series_0_75M_peripheral_aresetn 1 5 2 1780 290 2060
-preplace netloc reset_1 1 0 7 20 870 190 870 NJ 870 NJ 870 NJ 870 NJ 870 2070
+preplace netloc reset_1 1 0 7 20 850 190 850 NJ 850 NJ 850 NJ 850 NJ 850 2070
 preplace netloc mdm_1_debug_sys_rst 1 1 4 210 750 NJ 750 NJ 750 1220
+preplace netloc clk_wiz_1_clk_out4 1 1 6 NJ 800 NJ 800 NJ 800 NJ 800 NJ 800 2040
 preplace netloc enc_btn_1 1 0 7 NJ 1070 NJ 1070 NJ 1070 NJ 1070 NJ 1070 NJ 1070 NJ
 preplace netloc axi_timer_0_interrupt 1 2 3 580 150 NJ 150 1220
 levelinfo -pg 1 0 100 370 720 1110 1470 1910 2200 2360 -top 0 -bot 1180
