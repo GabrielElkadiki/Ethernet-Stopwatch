@@ -42,10 +42,6 @@
 #include "xil_io.h"
 
 
-int transfer_data() {
-	return 0;
-}
-
 void print_app_header()
 {
 	xil_printf("\n\r\n\r-----lwIP TCP echo server ------\n\r");
