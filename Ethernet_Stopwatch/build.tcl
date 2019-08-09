@@ -27,7 +27,7 @@
 #
 # 3. The following remote source files that were added to the original project:-
 #
-#    "C:/FPGA_Dev/Ethernet_Stopwatch/Ethernet_Stopwatch.srcs/constrs_1/imports/ethernet/Nexys4DDR_Master.xdc"
+#    
 #
 #*****************************************************************************************
 
