@@ -30,13 +30,6 @@ module clk_divider(
     );
     integer ten_khz_count, refresh_count, one_hz_count, four_khz_count;
     
-    initial begin
-        ten_khz_count = 0;
-        refresh_count = 0;
-        one_hz_count = 0;
-        four_khz_count = 0;
-    end
-    
     always @ (posedge twentyFive_mhz_clk) begin
         if(reset) begin
             ten_khz_count = 0;
