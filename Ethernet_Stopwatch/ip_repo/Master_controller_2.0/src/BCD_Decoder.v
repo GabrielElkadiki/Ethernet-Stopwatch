@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module bcd_decoder(
+module BCD_Decoder(
     input [3:0] v,
     input [2:0] anum,
     output reg [6:0]seg,
