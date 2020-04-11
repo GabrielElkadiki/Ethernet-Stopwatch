@@ -29,16 +29,16 @@ module variable_clk_divider(
     integer var_count_limit = 0;
     always @ (set_val) begin
         case(set_val)
-            0: var_count_limit <= 9;
-            1: var_count_limit <= 8;
-            2: var_count_limit <= 7;
-            3: var_count_limit <= 6;
-            4: var_count_limit <= 5;
-            5: var_count_limit <= 4;
-            6: var_count_limit <= 3;
-            7: var_count_limit <= 2;
-            8: var_count_limit <= 1;
-            9: var_count_limit <= 0;
+            0: var_count_limit <= 10;
+            1: var_count_limit <= 9;
+            2: var_count_limit <= 8;
+            3: var_count_limit <= 7;
+            4: var_count_limit <= 6;
+            5: var_count_limit <= 5;
+            6: var_count_limit <= 4;
+            7: var_count_limit <= 3;
+            8: var_count_limit <= 2;
+            9: var_count_limit <= 1;
             default: var_count_limit <=5;
         endcase
     end
