@@ -41,6 +41,18 @@
 #endif
 #include "xil_io.h"
 
+// Stopwatch Value Addresses
+#define ADDR_f1 0x44a00040
+#define ADDR_f2 0x44a00044
+#define ADDR_f3 0x44a00048
+#define ADDR_f4 0x44a0004c
+#define ADDR_s1 0x44a00050
+#define ADDR_s2 0x44a00054
+#define ADDR_m1 0x44a00058
+#define ADDR_m2 0x44a0005c
+#define ADDR_control 0x44a00060
+
+
 
 void print_app_header()
 {
@@ -65,21 +77,19 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb,
 	/* in this case, we assume that the payload is < TCP_SND_BUF */
 	if (tcp_sndbuf(tpcb) > p->len) {
 		int stopwatch_control = atoi(p->payload);
-		Xil_Out64(0x44a0005c + 4, stopwatch_control);
-		int f1 = Xil_In64(0x44a00042);
-		int f2 = Xil_In64(0x44a00047);
-		int f3 = Xil_In64(0x44a0004b);
-		int f4 = Xil_In64(0x44a0004f);
-		int s1 = Xil_In64(0x44a00053);
-		int s2 = Xil_In64(0x44a00057);
-		int m1 = Xil_In64(0x44a0005b);
-		int m2 = Xil_In64(0x44a0005c);
+		Xil_Out32(ADDR_control, stopwatch_control);
 		char stopwatch_val[15];
-		sprintf(stopwatch_val, "%d-%d-%d-%d-%d-%d-%d-%d" ,m2, m1, s2, s1, f4, f3, f2, f1);
-		p->payload = stopwatch_val;
-		p->len = 15;
-		p->tot_len = 15;
-		err = tcp_write(tpcb, p->payload, p->len, 1);
+		sprintf(stopwatch_val, "%lu-%lu-%lu-%lu-%lu-%lu-%lu-%lu" ,
+				Xil_In32(ADDR_m2),
+				Xil_In32(ADDR_m1),
+				Xil_In32(ADDR_s2),
+				Xil_In32(ADDR_s1),
+				Xil_In32(ADDR_f4),
+				Xil_In32(ADDR_f3),
+				Xil_In32(ADDR_f2),
+				Xil_In32(ADDR_f1)
+		);
+		err = tcp_write(tpcb, stopwatch_val, 15, 1);
 		memset(&stopwatch_val[0], 0, sizeof(stopwatch_val));
 	} else
 		xil_printf("no space in tcp_sndbuf\n\r");
