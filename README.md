@@ -1,3 +1,7 @@
+Project uses Verilog, C, tcl (Only for build scripts), Python and Vivado Block Design. Built for the Nexys 4 DDR (A7-100t). Design allows the control and display of stopwatch values through the Python Client interface and Start/Stop/Reset control. Designed with Vivado 2016.3 and Vivado SDK 2016.3 with multiple free to use IP blocks.
+
+[Ethernet Stopwatch Demo](https://www.youtube.com/watch?v=3Fs1jozEAVQ)
+
 ** For Vivado 2016.3 **
 
 How to run '.tcl' scripts in Vivado:
