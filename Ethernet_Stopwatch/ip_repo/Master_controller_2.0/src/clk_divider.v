@@ -32,31 +32,41 @@ module clk_divider(
     
     always @ (posedge twentyFive_mhz_clk) begin
         if(reset) begin
-            ten_khz_count = 0;
-            refresh_count = 0;
-            four_khz_count = 0;
+            ten_khz_count <= 0;
+            refresh_count <= 0;
+            four_khz_count <= 0;
         end
         else begin
-            if(one_hz_count == 5000000) begin
-                one_hz_count = 0;
-                one_hz_clk = !one_hz_clk;
+            if(one_hz_count == 5000000 - 1) begin
+                one_hz_count <= 0;
+                one_hz_clk <= ~one_hz_clk;
             end
-            if(ten_khz_count == 1250) begin
-                ten_khz_count = 0;
-                ten_khz_clk = !ten_khz_clk;
+            else begin
+                one_hz_count <= one_hz_count + 1;
             end
-            if(refresh_count == 10000) begin
-                refresh_count = 0;
-                refresh_clk = !refresh_clk;
+            if(ten_khz_count == 1250 - 1) begin
+                ten_khz_count <= 0;
+                ten_khz_clk <= ~ten_khz_clk;
             end
-            if(four_khz_count == 2500) begin
-                four_khz_count = 0;
-                four_khz_clk = !four_khz_clk;
+            else begin
+                ten_khz_count <= ten_khz_count + 1;
             end
-            refresh_count = refresh_count + 1;
-            ten_khz_count = ten_khz_count + 1;
-            one_hz_count = one_hz_count + 1;
-            four_khz_count = four_khz_count + 1;
+            if(refresh_count == 10000 - 1) begin
+                refresh_count <= 0;
+                refresh_clk <= ~refresh_clk;
+            end
+            
+            else begin
+                refresh_count <= refresh_count + 1; 
+            end
+            
+            if(four_khz_count == 2500 - 1) begin
+                four_khz_count <= 0;
+                four_khz_clk <= ~four_khz_clk;
+            end
+            else begin
+                four_khz_count <= four_khz_count + 1;
+            end
        end
     end
 endmodule
